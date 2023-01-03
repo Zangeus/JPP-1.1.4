@@ -12,7 +12,6 @@ public class Util {
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            LOGGER.log(Level.INFO, "Соединение было установлено");
         } catch (SQLException e) {
             LOGGER.log(Level.INFO, "Соединение не было установлено");
             e.printStackTrace();
