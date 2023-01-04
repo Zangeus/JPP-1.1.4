@@ -13,17 +13,15 @@ import static jm.task.core.jdbc.util.Util.getConnection;
 public class UserDaoJDBCImpl implements UserDao {
 
     public void createUsersTable() {
-        String query = """
-                CREATE TABLE IF NOT EXISTS user (
-                  `id` INT NOT NULL AUTO_INCREMENT,
-                  `name` VARCHAR(45) NOT NULL,
-                  `lastname` VARCHAR(45) NOT NULL,
-                  `age` INT NULL,
-                  PRIMARY KEY (`id`));""";
 
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(query);
+        try (Statement statement = getConnection().createStatement()) {
+            statement.executeUpdate("""
+                    CREATE TABLE IF NOT EXISTS user (
+                      `id` INT NOT NULL AUTO_INCREMENT,
+                      `name` VARCHAR(45) NOT NULL,
+                      `lastname` VARCHAR(45) NOT NULL,
+                      `age` INT NULL,
+                      PRIMARY KEY (`id`));""");
         } catch (SQLException e) {
             Util.getLOGGER().log(Level.INFO, "Произошла ошибка создания таблицы...");
             throw new RuntimeException(e);
@@ -31,11 +29,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
-        String query = "DROP TABLE IF EXISTS user";
-
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(query);
+        try (Statement statement = getConnection().createStatement()) {
+            statement.executeUpdate("DROP TABLE IF EXISTS user");
         } catch (SQLException e) {
             Util.getLOGGER().log(Level.INFO, "Не удалось удалить таблицу user");
             e.printStackTrace();
@@ -43,10 +38,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        String query = "INSERT INTO user (name, lastname, age) VALUES(?, ?, ?)";
-
-        try (Connection connection = getConnection();
-             PreparedStatement pStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement pStatement = getConnection().prepareStatement(
+                "INSERT INTO user (name, lastname, age) VALUES(?, ?, ?)")) {
 
             pStatement.setString(1, name);
             pStatement.setString(2, lastName);
@@ -61,10 +54,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        String query = "DELETE FROM user WHERE id = ?";
-
-        try (Connection connection = getConnection();
-             PreparedStatement pStatement = connection.prepareStatement(query)) {
+        try (PreparedStatement pStatement = getConnection().prepareStatement(
+                "DELETE FROM user WHERE id = ?")) {
             pStatement.setLong(1, id);
             pStatement.executeUpdate();
         } catch (SQLException e) {
@@ -75,13 +66,11 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
-        String query = "SELECT name, lastname, age FROM user";
+        try (Statement statement = getConnection().createStatement()) {
+            ResultSet resultSet = statement.executeQuery(
+                    "SELECT name, lastname, age FROM user");
 
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(query);
-
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 User user = new User();
                 user.setName(resultSet.getString("name"));
                 user.setLastName(resultSet.getString("lastname"));
@@ -97,10 +86,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        String query = "DELETE FROM user";
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(query);
+        try (Statement statement = getConnection().createStatement()) {
+            statement.executeUpdate("DELETE FROM user");
         } catch (SQLException e) {
             Util.getLOGGER().log(Level.INFO, "При очистке произошла ошибка");
             e.printStackTrace();

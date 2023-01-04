@@ -1,4 +1,5 @@
 package jm.task.core.jdbc.util;
+
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,6 +9,7 @@ public class Util {
     public static final String USERNAME = "root";
     public static final String PASSWORD = "12345678q";
     public static Logger LOGGER = Logger.getLogger(Util.class.getName());
+
     public static Connection getConnection() {
         Connection connection = null;
         try {

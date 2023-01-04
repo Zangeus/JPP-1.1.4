@@ -17,8 +17,8 @@ public class Main extends Util {
 
         userService.getAllUsers()
                 .forEach(x -> Util.getLOGGER().log(
-                     Level.INFO, "Пользователь " + x.getName() + " " + x.getLastName() +
-                                      " был успешно добавлен в таблицу"));
+                        Level.INFO, "Пользователь " + x.getName() + " " + x.getLastName() +
+                                " был успешно добавлен в таблицу"));
         userService.cleanUsersTable();
         userService.dropUsersTable();
     }

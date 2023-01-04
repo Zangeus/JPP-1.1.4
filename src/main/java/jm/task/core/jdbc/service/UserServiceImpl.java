@@ -9,8 +9,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 public class UserServiceImpl extends Util implements UserService {
     UserDao userDao = new UserDaoJDBCImpl();
+
     public void createUsersTable() {
         userDao.createUsersTable();
     }
